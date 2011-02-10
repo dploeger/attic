@@ -1,0 +1,59 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+ lang="en" dir="ltr">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<!-- metadata -->
+<meta name="generator" content="Offline" />
+<meta name="version" content="Offline 0.1" />
+<!-- style sheet links -->
+<link rel="stylesheet" media="all" type="text/css" href="../../css/all.css" />
+<link rel="stylesheet" media="screen" type="text/css" href="../../css/screen.css" />
+<link rel="stylesheet" media="print" type="text/css" href="../../css/print.css" />
+
+</head>
+<body>
+<div class="dokuwiki export">
+
+
+
+
+<h1><a name="fiddling_with_funambol" id="fiddling_with_funambol">Fiddling with Funambol</a></h1>
+<div class="level1">
+
+<p>
+
+I&#039;m currently fiddling with <a href="http://www.funambol.com" class="urlextern" title="http://www.funambol.com"  rel="nofollow">Funambol</a>, which should be known as “Sync4j” to some of you. Funambol&#039;s a plattform-, device- and backend-independent synchronisation plattform. As these three features are certainly a good thing, the bad side of it is: it&#039;s done in Java. 
+</p>
+
+<p>
+Bah. I don&#039;t like Java very much. Especially for web services (which Funambol is after all).
+</p>
+
+<p>
+Another bad side is the bad documentation for its features and the configuration. Well, maybe it <strong>is</strong> bad, or it&#039;s documentation for Java programmers and I just don&#039;t get it. Could be aswell.
+</p>
+
+<p>
+Well, now I&#039;m pumping my brain with long lost Java programming experience to write a SLOX (SuSE Linux Open Exchange Server, better grandfather of <a href="http://www.open-xchange.org" class="urlextern" title="http://www.open-xchange.org"  rel="nofollow">OpenXchange</a>)-Connector. Basically SLOX&#039;s just a bunch of Tomcat-Controlled (Bah! Java again) data in a PostgreSQL-database, an OpenLDAP-Server and a Cyrus <acronym title="Internet Message Access Protocol">IMAP</acronym>-Backend. So the data shouldn&#039;t be that hard to sync. I&#039;m gonna try a one-way sync first though, because I think the days of SLOX at work are numbered.
+</p>
+
+<p>
+So I&#039;m using the spare documentation around Funambol to create myself a JDBC-based connector to the PostgreSQL. Though it&#039;s written in Java, the basic blocks work quite good right now. I&#039;ll post the connector under the <acronym title="GNU General Public License">GPL</acronym> here when I&#039;m ready.
+
+</p>
+<hr />
+
+<p>
+<strong>Tags</strong>:
+</p>
+<div class="tags"><span>
+	<a href="/doku.php/tags:funambol" class="wikilink1" title="tags:funambol" rel="tag">Funambol</a>
+</span></div>
+
+</div>
+</div><!-- closes <div class="dokuwiki export">-->

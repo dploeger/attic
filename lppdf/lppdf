@@ -1,0 +1,189 @@
+#!/usr/bin/perl
+
+# Filter to use with LPD to print PDF-Files into a output directory using ps2pdf and ghostscript.
+# Please read README.
+
+# Set these values to the appropiate things.
+
+$version="0.02";	# lppdf-Version
+$printername="lppdf";
+$outputdir="/var/spool/lpd/lppdf/export";
+$tempdir="/tmp";
+$distiller="ps2pdf";
+$log=0;		# Set to 0 to log things, -1 to don't
+$logfile="/tmp/lppdf.log";
+$usePSHeader=0;	# Set to 0 use Postscript-Headerinformation else then lpd-Header
+
+# Get Header from lpr
+
+$info=<STDIN>;
+
+if ($log==0)
+{
+	open (LOG,">>$logfile");
+	print LOG "Got Header: \n$info\n";
+}
+
+# Gather informations for the filename of the PDF-File
+
+@infotmp=split(/\ /,$info);
+
+for (@infotmp)
+{
+	if ($_ ne "")
+	{
+		push(@infoarr,$_);
+	}
+}
+
+
+if ($log==0)
+{
+	print LOG "Splitting Header into...\n";
+	$i=0;
+	for (@infoarr)
+	{
+		print LOG "$i: $_\n";
+		$i++;	
+	}
+}
+
+$author=substr($infoarr[0],index($infoarr[0],":")+1,length($infoarr[0])-index($infoarr[0],":")+1);
+
+$jobname=$infoarr[2];
+
+$jobname=~ s/\./-/gi;
+
+$seq=$infoarr[4];
+
+# Add current date
+
+$currentdate = time();
+$currentdatelocal= localtime($currentdate);
+@date = split(/ +/,$currentdatelocal);
+@time = split(/:/,$date[3]);
+
+$dateinfo=$date[2]."-".$date[1]."-".$date[4]."_".$time[0]."-".$time[1];
+
+$filename=$author."_".$jobname."_".$dateinfo;
+$distillerfilename=$filename;
+
+if ($usePSHeader==0)
+{
+	# Go on reading the STDIN, but print it to @psheader.
+
+	$goon=0;	# 0:goon reading.
+
+	while (pop(@psheader))
+	{}
+
+	if ($log==0)
+	{
+		print LOG "Reading PS-Header\n";
+	}
+		
+	while ($goon==0)
+	{
+		$_=<STDIN>;
+		push(@psheader,$_);
+		if (/\%\%EndComments/)
+		{
+			$goon=-1;	
+		}
+	}
+
+	if ($log==0)
+	{
+		print LOG "Looking for Title..\n";
+	}
+
+	# Now get the Title Information.
+
+	for (@psheader)
+	{
+		if (/\%\%Title/)
+		{
+			$filename=substr($_,index($_,":")+2,length($_)-index($_,":")-3);
+		}
+	}
+
+	if ($log==0)
+	{
+		print LOG "Found Title $filename\n";
+	}
+
+	$distillerfilename=$filename;
+
+	$distillerfilename=~ s/\ /-/gi;
+#	$filename=~ s/\ /\\ /gi;
+}
+
+if ($log==0)
+{
+	print LOG "Creating a PDF name $filename.pdf for $author on $dateinfo in Dir $outputdir \n";
+}
+
+# Create the Postscript-File
+
+if ($log==0)
+{
+	print LOG "->Creating File $tempdir/$filename.ps. Starting to write\n";
+}
+
+open(TMPFILE,">$tempdir/$distillerfilename.ps");
+
+# See, if we have to add $psheader
+
+if ($usePSHeader == 0)
+{
+	for (@psheader)
+	{
+		print TMPFILE $_;
+	}
+}
+
+while(<STDIN>)
+{
+	print TMPFILE $_;
+}
+
+close(TMPFILE);
+
+if ($log==0)
+{
+	print LOG "->Writing finished.\n";
+	print LOG "->Distilling using $distiller to $outputdir/$filename.pdf\n";
+}
+
+# Convert to PDF
+
+system("$distiller $tempdir/$distilerfilename.ps $outputdir/$distillerfilename.pdf");
+
+system("mv \"$outputdir/$distillerfilename.pdf\" \"$outputdir/$filename.pdf\"");
+
+# Remove Postscript-File
+
+if ($log==0)
+{
+	print LOG "->Distilling finished.\n";
+	print LOG "->Removing $tempdir/$filename.ps\n";
+}
+
+system("rm $tempdir/$distillerfilename.ps");
+
+# Changemod the Output-File
+
+system("chmod 0666 \"$outputdir/$filename.pdf\"");
+
+# Remove the outstanding job from the spool
+
+system("lprm -P $printername $seq");
+
+if ($log==0)
+{
+	close (LOG);
+}
+
+# Got it!
+
+exit 0;

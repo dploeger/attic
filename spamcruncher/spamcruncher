@@ -1,0 +1,747 @@
+#!/usr/bin/perl
+
+# SPAMCRUNCHER
+# ------------
+#
+# Script for checking out Mailboxes for filtering Spam.
+# Uses Mail::Spamassasin for Spam-checking.
+# Uses Mail::IMAPclient for IMAP-Servers and
+# Mail::POP3client for POP-Servers
+# Uses Mail::Sendmail for Mail-sending
+# Uses Getopt::Std and Getopt::Long for Argument-checking
+# Uses Term::ReadKey for password-input
+# Uses IO::File for saving POP-Mails
+# You can use the SpamAssassin configuration-file
+# (see www.spamassassin.org for details) to configure
+# spam-detection
+#
+# -----------------------------------------------------
+#
+# V 0.1c
+#
+# -----------------------------------------------------
+#
+# History of changes:
+#
+# V 0.1c - Replaced UID-value for IMAPclient to UID=False
+#	   Scanning is now done through $i, not through
+#	   @imap_messages... that doesn't seem to work
+#	   for some servers...
+# V 0.1b - first release
+
+# Modules
+
+use Mail::SpamAssassin;
+use Mail::IMAPClient;
+use Mail::POP3Client;
+use Mail::Sendmail;
+use Getopt::Std;
+use Getopt::Long;
+use Term::ReadKey;
+use IO::File;
+
+# Variables
+
+# Actions
+
+our $opt_c;
+our $opt_d;
+our $opt_s;
+our $opt_h;
+our $opt_e;
+
+# Options
+
+our $opt_p;
+our $opt_i;
+our $opt_f;
+our $opt_o;
+our $opt_r;
+our $opt_P;
+our $opt_v;
+our $opt_a;
+our $opt_m;
+our $opt_l;
+
+# Settings
+
+our $server_type;
+our $server_port;
+our $server_name;
+
+our $connection;
+
+our $user_name;
+our $user_pass;
+
+our $local_spamfolder;
+our $local_filename;
+
+our $verbose;
+our $action;
+
+our $message_count;
+
+our @imap_folders;
+our @imap_messages;
+our @imap_currentmessage;
+our $imap_spamfolder;
+
+our @pop_currentmessage;
+our @pop_currenthead;
+
+our $spam_mail;
+our $spam_object;
+our $spam_status;
+
+our $mail_report;
+our $mail_active;
+our $mail_to;
+our $mail_from;
+our $mail_subject;
+our %mail_object;
+our $mail_spamfound;
+our $mail_server;
+
+# Helping variables
+
+our @date;
+our $univs;
+our $univsa;
+our $univsb;
+our $i;
+
+# default-values
+
+$mail_from="spamcruncher <spamcruncher\@mynet.net>";
+$mail_subject="SpamCruncher found spam.";
+$mail_server="smtp.mynet.net";
+
+# Argument-checking
+
+getopts("cdshepif:oP:va:m:l:");
+GetOptions("check"=>\$opt_c,"delete"=>\$opt_d,"save"=>\$opt_s,"save-headers"=>\$opt_h,"move-mail"=>\$opt_e,"pop3"=>\$opt_p,"imap"=>\$opt_i,"spam-folder=s"=>\$opt_f,"omit-password"=>\$opt_o,"port=s"=>\$opt_P,"verbose"=>\$opt_v,"scan-folders=s"=>\$opt_a,"mailto=s"=>\$opt_m,"mail-folder=s"=>\$opt_l);
+
+if ((!defined($opt_c)) && (!defined($opt_d)) && (!defined($opt_s)) && (!defined($opt_h)) && (!defined($opt_e)))
+{
+	print "You haven't set an action!\n";
+	usage();
+	exit -1;
+} else
+{
+	if (defined($opt_c))
+	{
+		$action="c";
+	} elsif (defined($opt_d))
+	{
+		$action="d";
+	} elsif (defined($opt_s))
+	{
+		$action="s";
+	} elsif (defined($opt_h))
+	{
+		$action="h";
+	} elsif (defined($opt_e))
+	{
+		$action="e";
+	}
+}
+
+if ((!defined($opt_p)) && (!defined($opt_i)))
+{
+	print "You haven't set a server-type (pop3,imap).";
+	usage();
+	exit -1;
+} else
+{
+	if (defined($opt_p))
+	{
+		$server_type="p";
+	} else
+	{
+		$server_type="i";
+	}
+}
+
+if (($action eq "e") && ($server_type eq "p"))
+{
+	print "Moving messages is not available on a POP3-Server!\n";
+	usage();
+	exit -1;
+}
+
+if (($action eq "e") && (!defined($opt_l)))
+{
+	print "You have selected action e, but haven't set a mail-folder to move the mail to.\n";
+	usage();
+	exit -1;
+} elsif ($action eq "e")
+{
+	$imap_spamfolder=$opt_l;
+}
+
+if ((!defined($ARGV[0])) && (!defined($ARGV[1]))) 
+{
+	print "You haven't set a servername and a username.\n";
+	usage();
+	exit -1;
+} else
+{
+	$server_name=$ARGV[0];
+	$user_name=$ARGV[1];
+}
+
+if ((!defined($opt_o)) && (!defined($ARGV[2])))
+{
+	print "You haven't set a password and option -o is omitted.\n";
+	usage();
+	exit -1;
+} elsif ((!defined($opt_o)))
+{
+	$user_pass=$ARGV[2];
+}
+
+if (!defined($opt_v))
+{
+	$verbose=-1;
+} else
+{
+	$verbose=0;
+}
+
+if ((($action eq "s") || ($action eq "h")) && (!defined($opt_f)))
+{
+	print "You have set action s or h and haven't set a spam-folder.\n";
+	usage();
+	exit -1;
+} else
+{
+	$local_spamfolder=$opt_f;
+
+	if (substr($local_spamfolder,length($local_spamfolder)-1,1) ne "/")
+	{
+		$local_spamfolder.="/";
+	}
+}
+
+if (defined($opt_P))
+{
+	$server_port=$opt_P;
+} else
+{
+	if (defined($opt_i))
+	{
+		$server_port=143;
+	} else
+	{
+		$server_port=110;
+	}
+}
+
+if (defined($opt_a))
+{
+	@imap_folders=split(/,/,$opt_a);
+} else
+{
+	@imap_folders=split(/,/,"INBOX");
+}
+
+if (defined($opt_m))
+{
+	$mail_report="This is spamcruncher.\n\n";
+	$mail_report.="Scanning server $server_name (user $user_name) using action $action\n\n";
+	$mail_active=0;
+	$mail_spamfound=-1;
+	$mail_to=$opt_m;
+} else
+{
+	$mail_active=-1;
+}
+	
+if ($verbose==0)
+{
+	print "Will contact Server $server_name:$server_port using user $user_name.\n";
+}
+
+if (defined($opt_o))
+{
+	print "Please give password for this connection: ";
+
+	ReadMode("noecho");
+	$user_pass=ReadLine(0);
+	ReadMode("normal");
+
+	chomp($user_pass);
+
+	print "\n";
+}
+
+if ($verbose==0)
+{
+	print "Will perform action $action on a ";
+
+	if ($server_type eq "p")
+	{
+		print "POP3";
+	} else
+	{
+		print "IMAP";
+	}
+	
+	print "-Server. \n";
+
+	if (($action eq "s") || ($action eq "h"))
+	{
+		print "The Spam-Folder for this connection will be $local_spamfolder.\n";
+	}
+
+	print "Starting action.\n\n";
+	print "Logging in..\n";
+}
+
+$spam_object=Mail::SpamAssassin->new();
+
+if ($server_type eq "p")
+{
+	$connection = new Mail::POP3Client ( USER => $user_name,
+					PASSWORD => $user_pass,
+					HOST => $server_name,
+					PORT => $server_port);
+
+	$message_count=$connection->Count();
+
+	if ($verbose==0)
+	{
+		print "Found ".$message_count." messages. \n";
+	}
+	
+	for ($i=1;$i<=$message_count; $i++)
+	{
+		if ($verbose==0)
+		{
+			print "Found mail #$i. Scanning... ";
+		}
+
+		@pop_currentmessage=$connection->Retrieve($i);
+
+		$spam_mail=Mail::SpamAssassin::NoMailAudit->new(data=>\@pop_currentmessage);
+			
+		$spam_status=$spam_object->check($spam_mail);
+		
+		if ($spam_status->is_spam())
+		{
+			$mail_spamfound=0;
+
+			if ($verbose==0)
+			{
+				print "Spam-Mail found. Executing action.\n";
+			}
+
+			if ($mail_active==0)
+			{
+				$mail_report.="Spam-Mail found: \n";
+				$mail_report.="Message #$_\n";
+
+					
+				
+				$mail_report.=getpophead($connection,$i,"From");
+				$mail_report.=getpophead($connection,$i,"Subject");
+			}
+
+			if ($action eq "c")
+			{
+				print getpophead($connection,$i,"From")."\n";
+				print getpophead($connection,$i,"Subject")."\n";
+			} elsif ($action eq "s")
+			{
+				if ($verbose==0)
+				{
+					print "Saving mail to spam-folder.\n";
+				}
+
+				@date=localtime(time());	
+
+				$local_filename=$server_name."_".$i."_".($date[5]+1900).sprintf("%02d",$date[4]+1).sprintf("%02d",$date[3]).sprintf("%02d",$date[2]).sprintf("%02d",$date[1]).sprintf("%02d",$date[0]);
+
+				$univs=new IO::File();
+				if (!defined($univs->open(">$local_spamfolder$local_filename")))
+				{
+					print "Error opening file $local_spamfolder$local_filename to save spam-mail to: $@.\n";
+					exit -1;
+				}
+					
+				if (!defined($connection->HeadAndBodyToFile($univs,$i)))
+				{
+					print "Error saving message $i: $@.\n";
+					exit -1;
+				}
+
+				undef $univs;
+
+				if ($verbose==0)
+				{
+					print "Deleting mail from server.\n";
+				}
+
+				if (!defined($connection->Delete($i)))
+				{
+					print "Error deleting message $i: $@.\n";
+					exit -1;
+				}
+			} elsif ($action eq "h")
+			{
+				if ($verbose==0)
+				{
+					print "Saving mail-header to spam-folder.\n";
+				}
+				
+				@date=localtime(time());	
+
+				$local_filename=$server_name."_".$i."_".($date[5]+1900).sprintf("%02d",$date[4]+1).sprintf("%02d",$date[3]).sprintf("%02d",$date[2]).sprintf("%02d",$date[1]).sprintf("%02d",$date[0]);
+
+				$univs=$connection->Head($i);
+
+				open (SPAMMAIL,">$local_spamfolder$local_filename");
+
+				print SPAMMAIL $univs;
+
+				close (SPAMMAIL);
+
+				if ($verbose==0)
+				{
+					print "Deleting mail from server.\n";
+				}
+
+				if (!defined($connection->Delete($i)))
+				{
+					print "Error deleting message $i: $@.\n";
+					exit -1;
+				}
+
+
+			} elsif ($action eq "d")
+			{
+				if ($verbose==0)
+				{
+					print "Deleting mail from server.\n";
+				}
+
+				if (!defined($connection->Delete($i)))
+				{
+					print "Error deleting message $i: $@.\n";
+					exit -1;
+				}
+
+			}
+			
+		} else
+		{
+			if ($verbose==0)
+			{
+				print "Mail OK.\n";
+			}
+		}
+	}
+
+	if ($verbose==0)
+	{
+		print "Closing connection to server.\n";
+	}
+
+	$connection->Close();
+} else
+{
+	$connection = Mail::IMAPClient->new(
+		Server => $server_name, 
+		User => $user_name,
+		Password => $user_pass,
+		Port => $server_port,
+		);
+		
+	if (!defined($connection))
+	{
+		print "IMAP=> Could not connect to server $@\n";
+		exit -1;
+	}	
+
+	$connection->login or die "IMAP=> Could not login $@\n";
+
+	$connection->Debug(0);
+
+	$connection->Uid(0);
+
+	for (@imap_folders)
+	{
+
+		if ($verbose==0)
+		{
+			print "Selecting folder $_\n";
+		}
+
+		$connection->select($_) or die "Could not select folder $_: $@\n";
+
+		$message_count=$connection->message_count();
+
+		if ($verbose==0)
+		{
+			print "Found ".$message_count." messages...\n";
+		}
+
+		@imap_messages=$connection->messages() or die "Could not retrieve messages: $@\n";
+
+		for ($i=1;$i<=$message_count;$i++)
+		{
+			@imap_currentmessage=split(/\n/,$connection->message_string($i));
+
+			# Scan Message
+			if ($verbose==0)
+			{
+				print "Found Message #$i. Scanning...";
+			}
+
+			$spam_mail=Mail::SpamAssassin::NoMailAudit->new(data=>\@imap_currentmessage);
+			
+			$spam_status=$spam_object->check($spam_mail);
+			
+			if ($spam_status->is_spam())
+			{
+				$mail_spamfound=0;
+
+				if ($verbose==0)
+				{
+					print "Spam-Mail found. Executing action.\n";
+				}
+
+				if ($mail_active==0)
+				{
+					$mail_report.="Spam-Mail found: \n";
+					$mail_report.="Message #$i\n";
+					$mail_report.="From: ".$connection->get_header($i,"From");
+					$mail_report.="Subject: ".$connection ->get_header($i,"Subject");
+				}
+
+				if ($action eq "c")
+				{
+					print "From: ";
+					print $connection->get_header($i,"From")."\n";
+					print "Subject: ";
+					print $connection->get_header($i,"Subject")."\n";
+				} elsif ($action eq "s")
+				{
+					if ($verbose==0)
+					{
+						print "Saving mail to spam-folder.\n";
+					}
+
+					@date=localtime(time());	
+
+					$local_filename=$server_name."_".$i."_".($date[5]+1900).sprintf("%02d",$date[4]+1).sprintf("%02d",$date[3]).sprintf("%02d",$date[2]).sprintf("%02d",$date[1]).sprintf("%02d",$date[0]);
+					if (!defined($connection->message_to_file("$local_spamfolder$local_filename",$i)))
+					{
+						print "Error saving message $i: $@.\n";
+						exit -1;
+					}
+
+					if ($verbose==0)
+					{
+						print "Deleting mail from server.\n";
+					}
+			
+					if (!defined($connection->delete_message($i)))
+					{
+						print "Error deleting message $i: $@\n";
+						exit -1;
+					}
+				} elsif ($action eq "h")
+				{
+					if ($verbose==0)
+					{
+						print "Saving mail-header to spam-folder.\n";
+					}
+
+					@date=localtime(time());	
+
+					$local_filename=$server_name."_".$i."_".($date[5]+1900).sprintf("%02d",$date[4]+1).sprintf("%02d",$date[3]).sprintf("%02d",$date[2]).sprintf("%02d",$date[1]).sprintf("%02d",$date[0]);
+
+					open (SPAMMAIL,">$local_spamfolder$local_filename");
+
+					$univs=$connection->parse_headers($i,"ALL");
+
+					while (($univsa,$univsb) = each (%{$univs}))
+					{	
+						print SPAMMAIL $univsa.":".join("\n",@{$univsb})."\n";
+					}
+					
+					close (SPAMMAIL);
+
+					if ($verbose==0)
+					{
+						print "Deleting mail from server.\n";
+					}
+			
+					if (!defined($connection->delete_message($i)))
+					{
+						print "Error deleting message $i: $@\n";
+						exit -1;
+					}
+
+				} elsif ($action eq "d")
+				{
+					if ($verbose==0)
+					{
+						print "Deleting mail from server.\n";
+					}
+			
+					if (!defined($connection->delete_message($i)))
+					{
+						print "Error deleting message $i: $@\n";
+						exit -1;
+					}
+				} elsif ($action eq "e")
+				{
+					if ($verbose==0)
+					{
+						print "Moving mail to $imap_spamfolder\n";
+					}
+
+					if (!defined($connection->move($imap_spamfolder,$i)))
+					{
+						print "Couldn't move mail $i to folder $imap_spamfolder: $@\n";
+						exit -1;
+					}
+				}
+			} else
+			{
+				if ($verbose==0)
+				{
+					print "Mail OK.\n";
+				}
+			}
+		}
+
+		if ($action ne "c")
+		{
+			if (!defined($connection->expunge($_)))
+			{
+				print "WARNING=> Could not expunge Folder $_!!";
+			}
+		}
+	}
+
+	if ($verbose==0)
+	{
+		print "Logging out...\n";
+	}
+
+	$connection ->logout or die "IMAP=> Could not logout $@\n";
+}
+
+undef $connection;
+
+if (($mail_active==0) && ($mail_spamfound==0))
+{
+
+	# Send report-mail
+
+	if ($action eq "c")
+	{
+		$mail_report.="\nNothing has been done.\n";
+	} elsif ($action eq "d")
+	{
+		$mail_report.="\nSpam has been deleted.\n";
+	} elsif ($action eq "s")
+	{
+		$mail_report.="\nSpam has been saved to $local_spamfolder.\n";
+	} elsif ($action eq "h")
+	{
+		$mail_report.="\nHeaders of spam had been saved to $local_spamfolder.\n";
+	} elsif ($action eq "e")
+	{
+		$mail_report.="\nSpam has been moved to $imap_spamfolder.\n";
+	}
+
+	if ($verbose==0)
+	{
+	print "Sending report-mail\n";
+	}
+
+	%mail_object = (To => $mail_to,From => $mail_from, Subject=> $mail_subject, Message=>$mail_report);
+
+	$Mail::Sendmail::mailcfg{smtp} = [$mail_server];
+
+	if (sendmail(%mail_object)==0)
+	{
+		print "Error sending mail (".$Mail::Sendmail::log."):".$Mail::Sendmail::error."\n";
+		exit -1;
+	}
+
+}
+
+
+# Subs
+
+# Sub usage
+# Input: -
+# Output: -
+# STDOUT: Usage-Information
+# Funktion: Outputs the Usageinformation to STDOUT.
+
+sub usage
+{
+	print <<END;
+spamcruncher
+
+POP3 and IMAP spam mail checker
+
+Usage:
+
+spamcruncer <Action> <Options> <Servername> <Username> <Password>
+
+Valid actions:
+	-c, --check		: Check Spam on server and report, but do nothing
+	-d, --delete		: Check Spam on server and report, delete spam messages
+	-s, --save		: Check Spam on server and report, save spam messages to spam-folder (see below), then delete on server
+	-h, --save-headers	: Check Spam on server and report, save headers of spam-messages to spam-folder, then delete on server
+	-e, --move-mail		: (IMAP-only) Move mail to given mail-folder
+
+Valid options
+	-p, --pop3		: Server is a pop3-Server
+	-i, --imap		: Server is an imap-Server
+	-f, --spam-folder=	: Set spam-folder (local)
+	-o, --omit-password	: Password is omitted, ask me, when needing it.
+	-P, --port=		: Use port instead of standard POP3/IMAP-Port
+	-v, --verbose		: Be verbose doing things
+	-a, --scan-folders=	: Give a comma-seperated-list of IMAP-folders to scan. (if ommited, only "INBOX" will be scanned)
+	-m, --mailto=		: Send mail report, if Spam was found to given email-adress 
+	-l, --mail-folder=	: Set spam-folder for moving IMAP-mail to.
+	
+END
+}
+
+# Sub getpophead
+# Input: Connection-handle,message-number,head-part
+# Output: head-string
+# STDOUT: n/a
+# Funktion: Outputs the corresponding string to the given part of the pop-messagehead
+
+sub getpophead
+{
+	my $con_handle=$_[0];
+	my $msg_number=$_[1];
+	my $hd_part=$_[2];
+
+	my $getpophead_output;
+
+	@pop_currenthead=$con_handle->Head($msg_number);
+
+	for (@pop_currenthead)
+	{
+		if (/$hd_part/)
+		{
+			$getpophead_output=$_;
+		}
+	}
+
+	return $getpophead_output;
+}
+

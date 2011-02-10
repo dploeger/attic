@@ -1,0 +1,16 @@
+Installation notes for SpamCruncher
+
+Basically, SpamCruncher can just be started on any computer running Perl5. (tested with 5.6.1)
+Just unpack the download and run the script. But please note the following prerequisites:
+
+You need to have the following perl-modules installed to run SpamCruncher:
+
+Mail::Spamassassin
+Mail::IMAPclient
+Mail::POP3client
+Mail::Sendmail
+Getopt:Std
+Term::ReadKey
+IO::File
+
+Please see the CPAN for downloading purposes. (www.cpan.org)

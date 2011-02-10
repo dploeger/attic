@@ -1,0 +1,96 @@
+
+ /===                 ###                 #
+ |                    #                   #
+ \==\ /==\ /==\ /\/\  #   ### # # ### ### ### ### ###
+    | |  | |  | |  |  #   #   # # # # #   # # #-- #
+ \==/ |==/ \==| |  |  ### #   ### # # ### # # ### #
+      |
+      | 
+
+                 --== Readme ==-- 
+
+I What is SpamCruncher??
+
+SpamCruncher is a small Perl-Script, that uses the
+SpamAssassin-engine to identify spam on remote POP3-
+or IMAP-Servers. So you only need SpamCruncher if your
+E-Mail host doesn't offer you free anti-spam services.
+
+II How do I use SpamCruncher??
+
+If you want to use the mail-feature you have to set three options in the spamcruncher-file. Please open it using your favourite 
+editor and go to the following line:
+# default-values
+
+You can set these options:
+
+$mail_from="spamcruncher <spamcruncher\@mynet.net>";    (FROM-Mailadress for the report-mails)
+$mail_subject="SpamCruncher found spam.";	 	(Subject for the report-mails)
+$mail_server="smtp.mynet.net";				(SMTP-Server for sending report-mails)
+
+Just start spamcruncher and it will give you usage informations:
+
+--snip--
+
+spamcruncher
+
+POP3 and IMAP spam mail checker
+
+Usage:
+
+spamcruncer <Action> <Options> <Servername> <Username> <Password>
+
+Valid actions:
+	-c, --check		: Check Spam on server and report, but do nothing
+	-d, --delete		: Check Spam on server and report, delete spam messages
+	-s, --save		: Check Spam on server and report, save spam messages to spam-folder (see below), then delete on server
+	-h, --save-headers	: Check Spam on server and report, save headers of spam-messages to spam-folder, then delete on server
+	-e, --move-mail		: (IMAP-only) Move mail to given mail-folder
+
+Valid options
+	-p, --pop3		: Server is a pop3-Server
+	-i, --imap		: Server is an imap-Server
+	-f, --spam-folder=	: Set spam-folder (local)
+	-o, --omit-password	: Password is omitted, ask me, when needing it.
+	-P, --port=		: Use port instead of standard POP3/IMAP-Port
+	-v, --verbose		: Be verbose doing things
+	-a, --scan-folders=	: Give a comma-seperated-list of IMAP-folders to scan. (if ommited, only "INBOX" will be scanned)
+	-m, --mailto=		: Send mail report, if Spam was found to given email-adress 
+	-l, --mail-folder=	: Set spam-folder for moving IMAP-mail to.
+
+--/snip/--
+
+Generally you have to set one action and one option. 
+
+Examples:
+
+1) You want to check, if there's spam on your remote POP3-Server:
+
+spamcruncher -cpv pop3.mynet.net foobar foobar
+
+=> Checks (-c) and outputs (-v) spam on a pop3-Server (-p) named pop3.mynet.net for the user foobar identifying with the password foobar.
+
+2) You want to move all spam-mails on your remote IMAP-Server to a spam-folder:
+
+spamcruncher -eiv -l INBOX.Spam imap.mynet.net foobar foobar
+
+=> Moves all spam-mails (-e) on the imap-Server (-i) imap.mynet.net to the folder INBOX.Spam (-l) for the user foobar/password foobar.
+   A detailed output of the operation is given (-v).
+
+3) Same as 2, but you're using it as a cronjob and want to be notified of the actions through mail.
+
+spamcruncher -ei -l INBOX.Spam -m foobar@mynet.net imap.mynet.net foobar foobar
+
+=> Same as 2), but there's no output to the shell, but a report-mail is sent to foobar@mynet.net
+
+NOTE: ALWAYS USE -C FIRST, SO YOU DON'T ACTUALLY LOOSE MESSAGES YOU DON'T WANT TO LOOSE!!!
+
+III How does SpamCruncher identify spam??
+
+SpamCruncher uses the well-known SpamAssassin Spam-detection-engine for Spamdetection. Everything you need to know is on
+www.spamassassin.org.
+
+IV SpamCruncher identifies a message as spam, but it ain't!!
+
+Please go to spamassasin.org for further information. Generally spamassasin uses configuration files where you can set the
+spam-identifying options. These are typically at ~/.spamassasin and /etc. 

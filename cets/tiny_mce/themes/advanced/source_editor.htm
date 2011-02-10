@@ -1,0 +1,34 @@
+<html>
+<head>
+<title>{$lang_theme_code_title}</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script language="javascript" src="../../tiny_mce_popup.js"></script>
+<script language="javascript">
+	function saveContent() {
+		if (window.opener) {
+			window.opener.tinyMCE.setContent(document.getElementById('htmlSource').value);
+			window.close();
+		}
+	}
+
+	// Fixes some charcode issues
+	function fixContent(html) {
+		var re = new RegExp('&nbsp;|&#160;', 'g');
+		html = html.replace(re, "&amp;nbsp;");
+
+		return html;
+	}
+
+	window.focus();
+</script>
+</head>
+<body>
+<div class="title">{$lang_theme_code_title}</div>
+<br>
+<script language="JavaScript">
+	document.write('<textarea id="htmlSource" name="htmlSource" cols="60" rows="15" style="width: ' + tinyMCE.getParam("theme_advanced_source_editor_area_width", 320) + 'px; height: ' + tinyMCE.getParam("theme_advanced_source_editor_area_height", 190) + 'px">' + fixContent(tinyMCE.getContent(tinyMCE.getWindowArg('editor_id'))) + '</textarea>');
+</script>
+<br>
+<input type="button" name="Button" value="{$lang_theme_code_save}" onclick="saveContent();">
+</body>
+</html>

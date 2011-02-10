@@ -1,0 +1,7 @@
+0.02-1
+- Better filenaming (Date-entries have changed from Print-header to system time)
+- Support for filenaming through the Postscript-Title
+- Elimination of some minor bugs not mentioned in the bug-tracker...
+
+0.01-1
+- First release, basic functions available, no testing had been done...

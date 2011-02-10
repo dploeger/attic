@@ -1,0 +1,67 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+ lang="en" dir="ltr">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<!-- metadata -->
+<meta name="generator" content="Offline" />
+<meta name="version" content="Offline 0.1" />
+<!-- style sheet links -->
+<link rel="stylesheet" media="all" type="text/css" href="../../../css/all.css" />
+<link rel="stylesheet" media="screen" type="text/css" href="../../../css/screen.css" />
+<link rel="stylesheet" media="print" type="text/css" href="../../../css/print.css" />
+
+</head>
+<body>
+<div class="dokuwiki export">
+
+
+
+
+<h1><a name="working_with_alpha" id="working_with_alpha">Working with Alpha</a></h1>
+<div class="level1">
+
+<p>
+
+I&#039;ve recut my graphics for the walkcycle now, saved them lossless as .tga-files to import them into Creatoon. That worked quite well. 
+</p>
+
+<p>
+The problem was, that Creatoon put strange fuzzy edges around the single cells when rotating them. I figured out, that the 24-bitality of the cell-graphics was the problem for that. So I scaled down the cells to the needed colors (10 to note) and it worked: the fuzzy borders were gone.
+</p>
+
+<p>
+Now I had the problem, that I couldn&#039;t get Creatoon to display the graphics 1 to 1 and don&#039;t do anti-aliasing in any way. So after AGS took the pink colour away (the transparency colour for AGS), there were ugly pink borders around the cells, because they were not exactly the pink colour AGS needed.
+</p>
+
+<p>
+But then I found out, that using 32-bit colourdepth in my game (by converting it to 32-bit) AGS could read the Alpha-Channel of images. So I did that and used the RGBA-Renderer Creatoon provides. In the end, I got a quite good walkflow. I put “Charlie” on some background to watch him walk and it did look quite good, although small fragments, that should&#039;ve been Alpha, I think, were left over by the Alpha-Reader. But I think, that it could work.
+</p>
+
+<p>
+I just don&#039;t know, if that&#039;s the right way. I hardly switched from 256-colour- to 16-bit-colourmode, now I had to switch even to 32-bit. I don&#039;t know, if AGS can handle that fast enough.
+</p>
+
+<p>
+I probably should look into other programs than Creatoon, that can render without anti-aliasing… if they even exist. That&#039;s the problem with the free Creatoon - it&#039;s not developed anymore. Is there not a single <acronym title="GNU General Public License">GPL</acronym>&#039;ed cell-animation software?
+</p>
+
+<p>
+I will continue next time.
+
+</p>
+<hr />
+
+<p>
+<strong>Tags:</strong>
+</p>
+<div class="tags"><span>
+	<a href="/doku.php/games:tags:characters" class="wikilink1" title="games:tags:characters" rel="tag">Character design</a>
+</span></div>
+
+</div>
+</div><!-- closes <div class="dokuwiki export">-->

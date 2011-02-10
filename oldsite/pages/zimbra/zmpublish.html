@@ -1,0 +1,151 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+ lang="en" dir="ltr">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<!-- metadata -->
+<meta name="generator" content="Offline" />
+<meta name="version" content="Offline 0.1" />
+<!-- style sheet links -->
+<link rel="stylesheet" media="all" type="text/css" href="../../css/all.css" />
+<link rel="stylesheet" media="screen" type="text/css" href="../../css/screen.css" />
+<link rel="stylesheet" media="print" type="text/css" href="../../css/print.css" />
+
+</head>
+<body>
+<div class="dokuwiki export">
+
+
+
+
+<h1><a name="zmpublish" id="zmpublish">zmPublish</a></h1>
+<div class="level1">
+
+</div>
+<!-- SECTION "zmPublish" [1-25] -->
+<h2><a name="download" id="download">Download</a></h2>
+<div class="level2">
+
+<p>
+
+For all you impatient people, here&#039;s the download link:
+</p>
+
+<p>
+<a href="http://www.dieploegers.de/files/zmpublish.zip" class="urlextern" title="http://www.dieploegers.de/files/zmpublish.zip"  rel="nofollow">http://www.dieploegers.de/files/zmpublish.zip</a>
+</p>
+
+<p>
+Current version is <strong>20100107</strong>
+</p>
+
+</div>
+<!-- SECTION "Download" [26-188] -->
+<h2><a name="description" id="description">Description</a></h2>
+<div class="level2">
+
+<p>
+
+Many companies use <acronym title="Lightweight Directory Access Protocol">LDAP</acronym>-Directories for several reasons (i.e. online addressbooks in company telephones). Zimbra currently offers no possibilty to export contacts into a <acronym title="Lightweight Directory Access Protocol">LDAP</acronym>-Directory.
+</p>
+
+<p>
+This script fetches addressbooks in VCF-format and generates a <acronym title="Lightweight Directory Access Protocol">LDAP</acronym>-tree out of it. It should be used on a separate <acronym title="Lightweight Directory Access Protocol">LDAP</acronym>-Server. It could work on the Zimbra-Server itself, though this is heavily NOT recommended.
+</p>
+
+<p>
+@Zimbra: If you&#039;d like to integrate it in main Zimbra, go ahead! It would all make us happy :)
+</p>
+
+</div>
+<!-- SECTION "Description" [189-709] -->
+<h2><a name="how_it_works" id="how_it_works">How it works</a></h2>
+<div class="level2">
+
+<p>
+
+zmPublish is a small <acronym title="Practical Extraction and Report Language">Perl</acronym>-Script, that should be called with a configuration file. In this configuration file, the admin can setup so-called “publishers”, that fetch a Zimbra addressbook in VCF-format, maps the VCF-fields to <acronym title="Lightweight Directory Access Protocol">LDAP</acronym>-attributes and then builds up a <acronym title="Lightweight Directory Access Protocol">LDAP</acronym>-tree in the configured <acronym title="Lightweight Directory Access Protocol">LDAP</acronym>-server.
+</p>
+
+</div>
+<!-- SECTION "How it works" [710-1039] -->
+<h2><a name="installation" id="installation">Installation</a></h2>
+<div class="level2">
+
+<p>
+
+Just unzip the file and configure the zmpublish.cfg to address you needs. The configuration file is very self-explanatory.
+</p>
+
+</div>
+<!-- SECTION "Installation" [1040-1189] -->
+<h2><a name="faq" id="faq">FAQ</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> Why does my <acronym title="Lightweight Directory Access Protocol">LDAP</acronym> tree has elements like uid=1, uid=2, uid=3 and so on?</div>
+<ul>
+<li class="level2"><div class="li"> I didn&#039;t put the cn-attribute into the dn, because then we would have problems with people like john miller or something</div>
+</li>
+</ul>
+</li>
+<li class="level1"><div class="li"> The script says, that inetorgperson needs an attribute called sn. What about it?</div>
+<ul>
+<li class="level2"><div class="li"> Please check the entry in your Zimbra addressbook to have a surname. The inetorperson-schema, that the script uses in the <acronym title="Lightweight Directory Access Protocol">LDAP</acronym>-server needs this data.</div>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+<!-- SECTION "FAQ" [1190-1651] -->
+<h2><a name="todo" id="todo">Todo</a></h2>
+<div class="level2">
+
+<p>
+
+The script works, but I haven&#039;t tested much. If it doesn&#039;t work for you, please correct any problem and send the script back to me so I can update the version.
+</p>
+
+<p>
+Also, the script ignores photos, which would be a rather cool thing to support. Anyone?
+</p>
+
+<p>
+Perhaps I&#039;ve missed something designing the mappings at the top of the script. If you can add or change anything, send me a note.
+</p>
+
+</div>
+<!-- SECTION "Todo" [1652-2050] -->
+<h2><a name="changelog" id="changelog">Changelog</a></h2>
+<div class="level2">
+
+<p>
+
+<strong>20100107</strong>
+
+</p>
+<ul>
+<li class="level1"><div class="li"> Changed versioning into Dokuwiki-like scheme</div>
+</li>
+<li class="level1"><div class="li"> Disabled <acronym title="Secure Sockets Layer">SSL</acronym> certificate verification for curl (I guess, most people won&#039;t be needing that)</div>
+</li>
+<li class="level1"><div class="li"> Scope for search for existing tree for drop operation searched the whole tree, not only the specific dn</div>
+</li>
+</ul>
+
+<p>
+
+<strong>0.1b</strong>
+
+</p>
+<ul>
+<li class="level1"><div class="li"> Initial release</div>
+</li>
+</ul>
+
+</div>
+<!-- SECTION "Changelog" [2051-] --></div><!-- closes <div class="dokuwiki export">-->

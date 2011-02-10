@@ -1,0 +1,87 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+ lang="en" dir="ltr">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<!-- metadata -->
+<meta name="generator" content="Offline" />
+<meta name="version" content="Offline 0.1" />
+<!-- style sheet links -->
+<link rel="stylesheet" media="all" type="text/css" href="../../../../css/all.css" />
+<link rel="stylesheet" media="screen" type="text/css" href="../../../../css/screen.css" />
+<link rel="stylesheet" media="print" type="text/css" href="../../../../css/print.css" />
+
+</head>
+<body>
+<div class="dokuwiki export">
+
+
+
+
+<h1><a name="uninstalling_sloxml" id="uninstalling_sloxml">5. Uninstalling SloxML</a></h1>
+<div class="level1">
+
+</div>
+<!-- SECTION "5. Uninstalling SloxML" [1-38] -->
+<h2><a name="introduction" id="introduction">Introduction</a></h2>
+<div class="level2">
+
+<p>
+
+In case you don&#039;t like SloxML, it doesn&#039;t work for you (please read <a href="../../../funambol/sloxml/01_troubleshooting.html" class="wikilink1" title="funambol:sloxml:01_troubleshooting">Troubleshooting</a> first!) or you don&#039;t need it anymore, you can safely uninstall SloxML.
+</p>
+
+</div>
+<!-- SECTION "Introduction" [39-243] -->
+<h2><a name="uninstalling_the_module" id="uninstalling_the_module">Uninstalling the module</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> Go to &lt;funambol-home&gt;/ds-server and open “install.properties” in your favourite text-editor</div>
+</li>
+<li class="level1"><div class="li"> Move the entry for sloxml from the install-modules-line to the uninstall-modules line.</div>
+</li>
+<li class="level1"><div class="li"> Save the file</div>
+</li>
+<li class="level1"><div class="li"> Run bin/install-modules(.cmd or .sh depending on your <acronym title="Operating System">OS</acronym>) tomcat50</div>
+</li>
+<li class="level1"><div class="li"> After that the module is uninstalled from the funambol-server</div>
+</li>
+<li class="level1"><div class="li"> Go to modules and remove the sloxml-s4j-module.</div>
+</li>
+</ul>
+
+</div>
+<!-- SECTION "Uninstalling the module" [244-675] -->
+<h2><a name="removing_the_jndi_name" id="removing_the_jndi_name">Removing the JNDI name</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> Go to &lt;funambol-home&gt;/tools/tomcat/conf/Catalina/localhost and open “funambol.txt” in your favourite text editor.</div>
+</li>
+<li class="level1"><div class="li"> Remove the complete “ResourceName” and “ResourceParams”-tags and subtags referring to the used JNDI-name (i.e.: sloxmlds)</div>
+</li>
+<li class="level1"><div class="li"> Save the file</div>
+</li>
+<li class="level1"><div class="li"> Restart tomcat by restarting the funambol-server</div>
+</li>
+</ul>
+
+</div>
+<!-- SECTION "Removing the JNDI name" [676-1027] -->
+<h2><a name="remove_the_extra_classes" id="remove_the_extra_classes">Remove the extra classes</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> Remove the postgresql.jar and the ldap.jar from &lt;funambol-Home&gt;/ds-server/lib/ and &lt;funambol-home&gt;/tools/tomcat/common/lib/.</div>
+</li>
+</ul>
+
+<p>
+
+That&#039;s all to remove the sloxml-module and required additional setups. The removal of the funambol-server is not covered by me. Under windows, it should be a simple deinstallation, under Unix-type <acronym title="Operating System">OS</acronym> you can remove the complete funambol-home and remove all init-scripts, that would start the server. But, again, the detail removal instructions are not covered here.
+</p>
+
+</div>
+<!-- SECTION "Remove the extra classes" [1028-] --></div><!-- closes <div class="dokuwiki export">-->

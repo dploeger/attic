@@ -1,0 +1,259 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+ lang="en" dir="ltr">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<!-- metadata -->
+<meta name="generator" content="Offline" />
+<meta name="version" content="Offline 0.1" />
+<!-- style sheet links -->
+<link rel="stylesheet" media="all" type="text/css" href="../../../css/all.css" />
+<link rel="stylesheet" media="screen" type="text/css" href="../../../css/screen.css" />
+<link rel="stylesheet" media="print" type="text/css" href="../../../css/print.css" />
+
+</head>
+<body>
+<div class="dokuwiki export">
+
+
+
+
+<h1><a name="documentation" id="documentation">Documentation</a></h1>
+<div class="level1">
+
+</div>
+<!-- SECTION "Documentation" [1-29] -->
+<h2><a name="api-documentation" id="api-documentation">API-Documentation</a></h2>
+<div class="level2">
+
+<p>
+
+The <acronym title="Application Programming Interface">API</acronym>-documentation can be accessed in JavaDoc-format <a href="http://develop.dieploegers.de/files/sqltools/doc" class="urlextern" title="http://develop.dieploegers.de/files/sqltools/doc"  rel="nofollow">http://develop.dieploegers.de/files/sqltools/doc</a>.
+</p>
+
+</div>
+<!-- SECTION "API-Documentation" [30-171] -->
+<h2><a name="introduction" id="introduction">Introduction</a></h2>
+<div class="level2">
+
+<p>
+
+The SQLTools-package is a set of classes to help working with <acronym title="Structured Query Language">SQL</acronym> databases. It currently only contains a tool to build up <acronym title="Structured Query Language">SQL</acronym> statements.
+</p>
+
+</div>
+<!-- SECTION "Introduction" [172-337] -->
+<h2><a name="importing" id="importing">Importing</a></h2>
+<div class="level2">
+
+<p>
+
+To use the sqltools-packages, use
+
+</p>
+<pre class="code">  import com.dploeger.sqltools.*</pre>
+
+</div>
+<!-- SECTION "Importing" [338-431] -->
+<h2><a name="sql_builder" id="sql_builder">SQL Builder</a></h2>
+<div class="level2">
+
+</div>
+<!-- SECTION "SQL Builder" [432-456] -->
+<h3><a name="introduction1" id="introduction1">Introduction</a></h3>
+<div class="level3">
+
+<p>
+
+The SQLBuilder-class aids the developer when dynamically creating <acronym title="Structured Query Language">SQL</acronym> statements. Instead of doing a lot of text concatenation with loops and if-clauses you can take a more OO-approach by building up your <acronym title="Structured Query Language">SQL</acronym> statements through objects.
+</p>
+
+</div>
+<!-- SECTION "Introduction" [457-718] -->
+<h3><a name="the_work_before_the_build" id="the_work_before_the_build">The work before the build</a></h3>
+<div class="level3">
+
+<p>
+
+SQLBuilder needs you to supply him at least ArrayLists of SQLSelect- and SQLTable-objects. You can also give him an ArrayList of SQLWhere-objects to include a where-clause.
+</p>
+
+<p>
+We&#039;re translating the following <acronym title="Structured Query Language">SQL</acronym>-Statement into a set of programming steps to build it using SQLBuilder:
+
+</p>
+<pre class="code">  SELECT a.columna AS &quot;Column A&quot;, b.* FROM tableA a join tableB b on a.id=b.a_id WHERE a.columna = 1 OR (b.columna = 1 AND b.columnb = 1)</pre>
+
+<p>
+
+<em>Note</em>: To create this statement, you&#039;ll need about twenty lines of code. Don&#039;t think of SQLBuilder as a shortcut, it&#039;s more a tool to create <strong>dynamic</strong> statements out of parameters or such.
+</p>
+
+</div>
+
+<h4><a name="step_1building_the_selects" id="step_1building_the_selects">Step 1: Building the selects</a></h4>
+<div class="level4">
+
+<p>
+
+This is very simple. We create an ArrayList and add to SQLSelects (though javac thinks, that this is insecure <img src="/lib/images/smileys/icon_wink.gif" class="middle" alt=";-)" />):
+</p>
+<pre class="code">
+ArrayList mySelects = new ArrayList();
+
+mySelects.add(new SQLSelect(&quot;a&quot;, &quot;columna&quot;, &quot;Column A&quot;));
+mySelects.add(new SQLSelect(&quot;b&quot;, &quot;*&quot;));
+</pre>
+
+<p>
+So we&#039;ve created the ArrayList “mySelects”. Then added the column “columna” from table “a” and an Alias “Column A”. As the second column uses the wildcard, we don&#039;t specify an alias for it.
+</p>
+
+</div>
+
+<h4><a name="step_2building_the_table_joins" id="step_2building_the_table_joins">Step 2: Building the table joins</a></h4>
+<div class="level4">
+
+<p>
+
+Now we&#039;d like to specify to tables and join them. This is done this way:
+</p>
+<pre class="code">
+ArrayList myTables = new ArrayList();
+
+SQLTable masterTable = new SQLTable(&quot;tableA&quot;, &quot;a&quot;);
+SQLTable joinedTable = new SQLTable(&quot;tableB&quot;, &quot;b&quot;);
+
+masterTable.SetJoin(joinedTable, &quot;id&quot;, &quot;a_id&quot;);
+
+myTables.add(masterTable);
+</pre>
+
+<p>
+We&#039;ve created the master table “tableA” with the alias “a” and the joining table “tableB” with the alias “b”. Next we set a join on the master table to the joining table using master&#039;s column “id” and join&#039;s table “a_id” as the join condition. Finally, we add the master table to our ArrayList.
+</p>
+
+</div>
+
+<h4><a name="step_3building_the_where_clause" id="step_3building_the_where_clause">Step 3: Building the where clause</a></h4>
+<div class="level4">
+
+<p>
+
+This consists of two parts: a simple where clause and a nested “OR”-clause. Use this code:
+</p>
+<pre class="code">
+ArrayList myWheres = new ArrayList();
+
+myWheres.add(new SQLWhere(&quot;a&quot;, &quot;columna&quot;, &quot; = 1&quot;));
+
+SQLWhere nestedWhereMaster = new SQLWhere(&quot;b&quot;, &quot;columna&quot;, &quot; = 1&quot;, &quot;OR&quot;);
+SQLWhere nestedWhereSlave = new SQLWhere(&quot;b&quot;, &quot;columnb&quot;, &quot; = 1&quot;);
+
+nestedWhereMaster.AddAndWhere(nestedWhereSlave);
+
+myWheres.add(nestedWhereMaster);
+</pre>
+
+<p>
+There. We&#039;ve created our “myWheres”-Arraylist and added the simple part, where the column “columna” of table “a” (or alias in this example) evaluates to ” = 1”. After that we&#039;ve created the first part of our nested query, where “columna” of table “b” evaluates to ”= 1” and said, that this part of the where-clause should be attached with an “OR” to the preceeding parts of the where-clause (“AND” is the default connection).
+</p>
+
+<p>
+Then we&#039;ve created the second part, where “columnb” of table “b” evaluates to ” = 1” and added them to the first part with an “AND” connection (done by AddAndWhere. There&#039;s also an AddOrWhere!). We cannot use the connection string (the third parameter of the SQLWhere-constructor), because we use a nested object.
+</p>
+
+<p>
+Lastly we&#039;ve added the master of the nested where-clause-part to our ArrayList.
+</p>
+
+</div>
+<!-- SECTION "The work before the build" [719-3811] -->
+<h3><a name="the_build" id="the_build">The build</a></h3>
+<div class="level3">
+
+<p>
+
+After we&#039;ve set up our objects, we build them using SQLBuilder:
+</p>
+<pre class="code">
+SQLBuilder sqlBuild = new SQLBuilder(mySelects, myTables, myWheres);
+String sql = sqlBuild.build();
+</pre>
+
+<p>
+After that the string “sql” contains the built statement from SQLBuilder.
+</p>
+
+</div>
+<!-- SECTION "The build" [3812-4088] -->
+<h3><a name="review" id="review">Review</a></h3>
+<div class="level3">
+
+<p>
+
+The complete code for this example is:
+</p>
+<pre class="code">
+ArrayList mySelects = new ArrayList();
+
+mySelects.add(new SQLSelect(&quot;a&quot;, &quot;columna&quot;, &quot;Column A&quot;));
+mySelects.add(new SQLSelect(&quot;b&quot;, &quot;*&quot;));
+
+ArrayList myTables = new ArrayList();
+
+SQLTable masterTable = new SQLTable(&quot;tableA&quot;, &quot;a&quot;);
+SQLTable joinedTable = new SQLTable(&quot;tableB&quot;, &quot;b&quot;);
+
+masterTable.SetJoin(joinedTable, &quot;id&quot;, &quot;a_id&quot;);
+
+myTables.add(masterTable);
+
+ArrayList myWheres = new ArrayList();
+
+myWheres.add(new SQLWhere(&quot;a&quot;, &quot;columna&quot;, &quot; = 1&quot;));
+
+SQLWhere nestedWhereMaster = new SQLWhere(&quot;b&quot;, &quot;columna&quot;, &quot; = 1&quot;, &quot;OR&quot;);
+SQLWhere nestedWhereSlave = new SQLWhere(&quot;b&quot;, &quot;columnb&quot;, &quot; = 1&quot;);
+
+nestedWhereMaster.AddAndWhere(nestedWhereSlave);
+
+myWheres.add(nestedWhereMaster);
+
+SQLBuilder sqlBuild = new SQLBuilder(mySelects, myTables, myWheres);
+String sql = sqlBuild.build();
+</pre>
+
+<p>
+After putting this into a java-script and running it, “sql” contains the following statement:
+
+</p>
+<pre class="code">  SELECT a.columna AS &quot;Column A&quot;, b.* FROM tableA a join tableB b on a.id = b.a_id WHERE (a.columna  = 1) OR (b.columna  = 1 AND (b.columnb  = 1))</pre>
+
+<p>
+
+The wanted statement was:
+
+</p>
+<pre class="code">  SELECT a.columna AS &quot;Column A&quot;, b.* FROM tableA a join tableB b on a.id=b.a_id WHERE a.columna = 1 OR (b.columna = 1 AND b.columnb = 1)</pre>
+
+<p>
+
+The two statements only differ in some brackets, but the <acronym title="Structured Query Language">SQL</acronym>-output is the same. So it worked!
+</p>
+
+<p>
+<em>Note</em>: Please keep in mind, that SQLBuilder is no intelligent tool, it&#039;s just a bunch of string concatenations, nothing more. You have to know <acronym title="Structured Query Language">SQL</acronym> to use it properly!
+</p>
+
+<p>
+If you have problems with the sqltools-package, read this: <a href="../../java/sqltools/03_troubleshooting.html" class="wikilink1" title="java:sqltools:03_troubleshooting">Troubleshooting</a>
+
+</p>
+
+</div>
+<!-- SECTION "Review" [4089-] --></div><!-- closes <div class="dokuwiki export">-->

@@ -1,0 +1,55 @@
+Project lpPDF
+
+Author(s): Dennis Plöger (dploeger@web.de)
+
+Usage
+-----
+
+lpPDF is a utility to bind a PDF-Conversion into the running printing system by adding an LPD-Printer and using the "Output Filter" lppdf
+
+Configuration
+-------------
+
+To use lpPDF on your system, you have to embed it in your running printing system. Add the following lines to your /etc/printcap:
+
+lppdf|pdf distiller:\
+        :sd=/var/spool/lpd/lppdf:\
+        :mx#0:\
+        :lp=/dev/null:\
+        :of=/var/spool/lpd/lppdf/lppdf:\
+        :sb:
+
+Then create the required directory-structure for lppdf:
+
+mkdir /var/spool/lpd/lppdf
+chown lp:lp /var/spool/lpd/lppdf
+
+..copy the lppdf-Script to the specified location and make it executable:
+
+cp lppdf /var/spool/lpd/lppdf
+chmod +x /var/spool/lpd/lppdf/lppdf
+
+, see the script for configuration and...
+
+Last, restart the lpd!
+
+/etc/init.d/lpd restart
+
+(For SuSE-Systems before 7.1, use /sbin/init.d/lpd restart)
+
+Now you can print directly to the printer lppdf using lpr -P lppdf <filename>. The output will be done in the configured (see the script!) directory using a unique name of the user and the printing date.
+
+.. have a lot of fun.
+
+todo
+----
+
+This is the first version, a lot of testing has to be done. Besides this:
+
+- Graphical input of filename (inputboxes)
+- Tests running lpPDF on centralised printservers.
+- Tests on that servers with graphical inputs.
+- Tests of possible windows printing (Generic printers? PS-printers??)
+- Some other features...
+
+

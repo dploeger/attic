@@ -1,0 +1,9 @@
+
+Changelog for SpamCruncher
+
+V 0.1c -> Replaced UID-value for IMAPclient to UID=False
+          Scanning is now done through $i, not through
+          @imap_messages... that doesn't seem to work
+          for some servers...
+V 0.1b -> first release
+

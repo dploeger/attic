@@ -1,0 +1,7 @@
+see the docs/manual directory for the manual and docs/phpdoc for the generated
+class documentation.
+
+
+NOTE
+
+	Better have a look in the top of cets.php and eventually change the path to tinymce!

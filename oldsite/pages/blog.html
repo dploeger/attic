@@ -1,0 +1,230 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+ lang="en" dir="ltr">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<!-- metadata -->
+<meta name="generator" content="Offline" />
+<meta name="version" content="Offline 0.1" />
+<!-- style sheet links -->
+<link rel="stylesheet" media="all" type="text/css" href="../css/all.css" />
+<link rel="stylesheet" media="screen" type="text/css" href="../css/screen.css" />
+<link rel="stylesheet" media="print" type="text/css" href="../css/print.css" />
+
+</head>
+<body>
+<div class="dokuwiki export">
+
+
+
+
+<h1><a name="development_blog" id="development_blog">Development Blog</a></h1>
+<div class="level1">
+</div>
+<div class="hfeed">
+<div class="plugin_include_content" id="plugin_include__blog:first_success_with_sloxml">
+
+
+
+<h2><a name="first_success_with_sloxml" id="first_success_with_sloxml" href="/doku.php/blog:first_success_with_sloxml" title="First success with SloxML">First success with SloxML</a></h2>
+<div class="level2">
+
+<p>
+
+I just had my first brilliant experience with sloxml: I used the Java <acronym title="Graphical User Interface">GUI</acronym>-Plugin to sync my contact database and it worked. I only returned the First- and LastName-Fields, but this worked.
+</p>
+
+<p>
+Now I&#039;ve added other fields to the output, but I have to understand the different state-methods of the SyncSource to go on. For now I&#039;ve only developed the “GetAllSyncItems”-method for a slow sync (where the client has no data at all). I still have to go for “GetNewSyncItems”, “GetUpdatedSyncItems” and “GetDeletedSyncItems”.
+</p>
+
+<p>
+The problem is, that I don&#039;t quite understand the concept behind these and what data I have to manage (do I have to record each item I have send to a principal or does the principal keep this database?), but I will investigate on that.
+</p>
+
+<p>
+The good thing to notice is: it works!
+
+</p>
+<hr />
+
+<p>
+<strong>Tags:</strong>
+</p>
+
+</div>
+<div class="inclmeta level2">
+	<abbr class="published" title="2007-02-16T13:30:01Z">2007/02/16 13:30</abbr>
+	&middot; <span class="vcard author"><a href="/doku.php/user:dennis_ploeger" class="wikilink2 url fn" title="user:dennis_ploeger">Dennis Ploeger</a></span>
+	&middot; <span class="comment"><a href="/doku.php/blog:first_success_with_sloxml#discussion__section" class="wikilink1" title="blog:first_success_with_sloxml#discussion__section">0&nbsp;Comments</a></span><div class="tags"><span>
+	<a href="/doku.php/tags:funambol" class="wikilink1" title="tags:funambol" rel="tag">Funambol</a>,
+	<a href="/doku.php/tags:funambol" class="wikilink1" title="tags:funambol" rel="tag">Funambol</a>
+	</span></div>
+
+</div>
+</div>
+<div class="level1">
+<div class="plugin_include_content" id="plugin_include__blog:sqltools_1.2.1_released">
+
+
+
+<h2><a name="sqltools_121_released" id="sqltools_121_released" href="/doku.php/blog:sqltools_1.2.1_released" title="SQLTools 1.2.1 released">SQLTools 1.2.1 released</a></h2>
+<div class="level2">
+
+<p>
+
+It&#039;s a good thing, I&#039;m developing SQLTools while developing SloxML. This way, I directly come across problems while using it.
+</p>
+
+<p>
+So it&#039;s V 1.2.1. I needed a column expression rather than a &lt;tablename&gt;.&lt;column&gt;-pair. So now you can give an empty string for the tablename and the dot will be omitted.
+
+</p>
+<hr />
+
+<p>
+<strong>Tags:</strong>
+</p>
+
+</div>
+<div class="inclmeta level2">
+	<abbr class="published" title="2007-02-16T11:23:18Z">2007/02/16 11:23</abbr>
+	&middot; <span class="vcard author"><a href="/doku.php/user:dennis_ploeger" class="wikilink2 url fn" title="user:dennis_ploeger">Dennis Ploeger</a></span>
+	&middot; <span class="comment"><a href="/doku.php/blog:sqltools_1.2.1_released#discussion__section" class="wikilink1" title="blog:sqltools_1.2.1_released#discussion__section">0&nbsp;Comments</a></span><div class="tags"><span>
+	<a href="/doku.php/tags:java" class="wikilink1" title="tags:java" rel="tag">Java</a>,
+	<a href="/doku.php/tags:java" class="wikilink1" title="tags:java" rel="tag">Java</a>
+	</span></div>
+
+</div>
+</div>
+<div class="level1">
+<div class="plugin_include_content" id="plugin_include__blog:svn_for_sqltools">
+
+
+
+<h2><a name="svn_for_sqltools" id="svn_for_sqltools" href="/doku.php/blog:svn_for_sqltools" title="SVN for SQLTools">SVN for SQLTools</a></h2>
+<div class="level2">
+
+<p>
+
+Today I&#039;ve created a new repository for SQLTools on my private SVN-server to aid me in the development.
+</p>
+
+<p>
+I think, no developer should live without hisself SCM-server. I like <a href="http://svn.tigris.org" class="urlextern" title="http://svn.tigris.org"  rel="nofollow">http://svn.tigris.org</a>, but you could also use the grandfather <acronym title="Concurrent Versions System">CVS</acronym> or any other software you like, as long as you use one. Even if you&#039;re alone and not in a team. It make developing (and it&#039;s documentation) so much easier.
+
+</p>
+<hr />
+
+<p>
+<strong>Tags:</strong>
+</p>
+
+</div>
+<div class="inclmeta level2">
+	<abbr class="published" title="2007-02-14T11:09:40Z">2007/02/14 11:09</abbr>
+	&middot; <span class="vcard author"><a href="/doku.php/user:dennis_ploeger" class="wikilink2 url fn" title="user:dennis_ploeger">Dennis Ploeger</a></span>
+	&middot; <span class="comment"><a href="/doku.php/blog:svn_for_sqltools#discussion__section" class="wikilink1" title="blog:svn_for_sqltools#discussion__section">0&nbsp;Comments</a></span><div class="tags"><span>
+	<a href="/doku.php/tags:general" class="wikilink1" title="tags:general" rel="tag">General entries</a>,
+	<a href="/doku.php/tags:svn" class="wikilink1" title="tags:svn" rel="tag">SVN</a>,
+	<a href="/doku.php/tags:general" class="wikilink1" title="tags:general" rel="tag">General entries</a>,
+	<a href="/doku.php/tags:svn" class="wikilink1" title="tags:svn" rel="tag">SVN</a>
+	</span></div>
+
+</div>
+</div>
+<div class="level1">
+<div class="plugin_include_content" id="plugin_include__blog:sqltools_1.1.1_released">
+
+
+
+<h2><a name="sqltools_111_released" id="sqltools_111_released" href="/doku.php/blog:sqltools_1.1.1_released" title="SQLTools 1.1.1 released">SQLTools 1.1.1 released</a></h2>
+<div class="level2">
+
+<p>
+
+That was fast. <a href="/doku.php/java:sqltools:00_about" class="wikilink1" title="java:sqltools:00_about">SQLTools</a> Version 1.0.1 lasted for only one day. I&#039;ve updated the SQLTable-object to specify a table join-type. The default (inner) can now be overwritten with “outer left” for example. This is specified using an expanded version of the SetJoin method. Read all about it in the <a href="http://develop.dieploegers.de/files/sqltools/doc" class="urlextern" title="http://develop.dieploegers.de/files/sqltools/doc"  rel="nofollow">API-documentation</a>.
+
+</p>
+<hr />
+
+<p>
+<strong>Tags:</strong>
+</p>
+
+</div>
+<div class="inclmeta level2">
+	<abbr class="published" title="2007-02-14T11:04:51Z">2007/02/14 11:04</abbr>
+	&middot; <span class="vcard author"><a href="/doku.php/user:dennis_ploeger" class="wikilink2 url fn" title="user:dennis_ploeger">Dennis Ploeger</a></span>
+	&middot; <span class="comment"><a href="/doku.php/blog:sqltools_1.1.1_released#discussion__section" class="wikilink1" title="blog:sqltools_1.1.1_released#discussion__section">0&nbsp;Comments</a></span><div class="tags"><span>
+	<a href="/doku.php/tags:java" class="wikilink1" title="tags:java" rel="tag">Java</a>,
+	<a href="/doku.php/tags:java" class="wikilink1" title="tags:java" rel="tag">Java</a>
+	</span></div>
+
+</div>
+</div>
+<div class="level1">
+<div class="plugin_include_content" id="plugin_include__blog:sqltools_1.0.1_released">
+
+
+
+<h2><a name="sqltools_101_released" id="sqltools_101_released" href="/doku.php/blog:sqltools_1.0.1_released" title="SQLTools 1.0.1 released">SQLTools 1.0.1 released</a></h2>
+<div class="level2">
+
+<p>
+
+During the described development for <a href="/doku.php/funambol:sloxml:00_about" class="wikilink1" title="funambol:sloxml:00_about">sloxml</a> I&#039;ve come across the task to dynamically create <acronym title="Structured Query Language">SQL</acronym> statements. After some googling I haven&#039;t found any package that allows the developer to create <acronym title="Structured Query Language">SQL</acronym> statements object oriented.
+</p>
+
+<p>
+So I&#039;ve developed my own.
+</p>
+
+<p>
+Yes. In Java.
+</p>
+
+<p>
+I don&#039;t know what came over me.
+</p>
+
+<p>
+Anyways, I&#039;ve released a tool named “SQLBuilder” in a package I call “SQLTools”. This tool allows you to build up your <acronym title="Structured Query Language">SQL</acronym>-Statement using objects and then building a real <acronym title="Structured Query Language">SQL</acronym> statement out of ArrayLists of objects.
+</p>
+
+<p>
+For more information go here: <a href="/doku.php/java:sqltools:00_about" class="wikilink1" title="java:sqltools:00_about">About</a>.
+
+</p>
+<hr />
+
+<p>
+<strong>Tags</strong>:
+</p>
+
+</div>
+<div class="inclmeta level2">
+	<abbr class="published" title="2007-02-13T21:00:46Z">2007/02/13 21:00</abbr>
+	&middot; <span class="vcard author"><a href="/doku.php/user:dennis_ploeger" class="wikilink2 url fn" title="user:dennis_ploeger">Dennis Ploeger</a></span>
+	&middot; <span class="comment"><a href="/doku.php/blog:sqltools_1.0.1_released#discussion__section" class="wikilink1" title="blog:sqltools_1.0.1_released#discussion__section">0&nbsp;Comments</a></span><div class="tags"><span>
+	<a href="/doku.php/tags:java" class="wikilink1" title="tags:java" rel="tag">Java</a>,
+	<a href="/doku.php/tags:funambol" class="wikilink1" title="tags:funambol" rel="tag">Funambol</a>,
+	<a href="/doku.php/tags:java" class="wikilink1" title="tags:java" rel="tag">Java</a>,
+	<a href="/doku.php/tags:funambol" class="wikilink1" title="tags:funambol" rel="tag">Funambol</a>
+	</span></div>
+
+</div>
+</div>
+<div class="level1">
+</div>
+<div class="level1">
+<p class="centeralign">
+<a href="/doku.php/blog?first=5" class="wikilink1">Older entries &gt;&gt;</a>
+</p>
+
+</div>
+</div><!-- closes <div class="dokuwiki export">-->

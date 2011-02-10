@@ -1,0 +1,217 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+ lang="en" dir="ltr">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<!-- metadata -->
+<meta name="generator" content="Offline" />
+<meta name="version" content="Offline 0.1" />
+<!-- style sheet links -->
+<link rel="stylesheet" media="all" type="text/css" href="../../../../css/all.css" />
+<link rel="stylesheet" media="screen" type="text/css" href="../../../../css/screen.css" />
+<link rel="stylesheet" media="print" type="text/css" href="../../../../css/print.css" />
+
+</head>
+<body>
+<div class="dokuwiki export">
+
+
+
+
+<h1><a name="installation" id="installation">1. Installation</a></h1>
+<div class="level1">
+
+</div>
+<!-- SECTION "1. Installation" [1-31] -->
+<h2><a name="introduction" id="introduction">Introduction</a></h2>
+<div class="level2">
+
+<p>
+
+SloxML is basically just a connector for Funambol and can be installed using the default Funambol module installation routines. For the non-Java and non-Funambol I&#039;m going to cover the detailed installation steps of the module.
+</p>
+
+<p>
+I will not cover the installation of the basic funambol server, but that&#039;s quite simple - even for a non-Java like me. Have a look at <a href="http://download.forge.objectweb.org/sync4j/funambol_ds_server_quick_start_guide.pdf" class="urlextern" title="http://download.forge.objectweb.org/sync4j/funambol_ds_server_quick_start_guide.pdf"  rel="nofollow">this guide</a> for the details.
+</p>
+
+</div>
+<!-- SECTION "Introduction" [32-537] -->
+<h2><a name="obtaining_the_module" id="obtaining_the_module">Obtaining the module</a></h2>
+<div class="level2">
+
+<p>
+
+The download is available at <a href="http://develop.dieploegers.dedoku.php?id=funambol:sloxml:download" class="urlextern" title="http://develop.dieploegers.dedoku.php?id=funambol:sloxml:download"  rel="nofollow">http://develop.dieploegers.dedoku.php?id=funambol:sloxml:download</a>. Select the latest version of the module and download it to your funambol server.
+</p>
+
+</div>
+<!-- SECTION "Obtaining the module" [538-758] -->
+<h2><a name="obtaining_the_other_required_classes" id="obtaining_the_other_required_classes">Obtaining the other required classes</a></h2>
+<div class="level2">
+
+<p>
+
+SloxML requires three classes to work properly:
+
+</p>
+<ul>
+<li class="level1"><div class="li"> <a href="http://jdbc.postgresql.org/" class="urlextern" title="http://jdbc.postgresql.org/"  rel="nofollow">The PostgreSQL JDBC-driver</a> (It&#039;s best to select the jdbc2 driver suitable to the database version on your server)</div>
+</li>
+<li class="level1"><div class="li"> <a href="http://developer.novell.com/wiki/index.php/LDAP_Classes_for_Java" class="urlextern" title="http://developer.novell.com/wiki/index.php/LDAP_Classes_for_Java"  rel="nofollow">Novell&#039;s Java Classes</a> <sup><a href="#fn__1" name="fnt__1" id="fnt__1" class="fn_top">1)</a></sup></div>
+</li>
+<li class="level1"><div class="li"> <a href="../../../java/sqltools/00_about.html" class="wikilink1" title="java:sqltools:00_about">My own SQLTools-package</a></div>
+</li>
+</ul>
+
+<p>
+
+Download and unpack any archives you come across. You need these files:
+
+</p>
+<ul>
+<li class="level1"><div class="li"> postgresql(-..).jar (You should rename it to postgresql.jar)</div>
+</li>
+<li class="level1"><div class="li"> ldap.jar</div>
+</li>
+<li class="level1"><div class="li"> sqltools-(..).jar (You should rename it to sqltools.jar)</div>
+</li>
+</ul>
+
+<p>
+
+Copy these two files to &lt;funambol-Home&gt;/ds-server/lib/ and &lt;funambol-home&gt;/tools/tomcat/common/lib/ (if you&#039;re using the bundled tomcat) and you&#039;re done.
+</p>
+
+</div>
+<!-- SECTION "Obtaining the other required classes" [759-1912] -->
+<h2><a name="creating_a_jndi_name_to_connect_to_slox_s_database" id="creating_a_jndi_name_to_connect_to_slox_s_database">Creating a JNDI name to connect to SLOX&#039;s database</a></h2>
+<div class="level2">
+
+<p>
+
+<em>Note</em>: I will only cover configuration instructions for a tomcat-based install, because I have no other. If someone has informations how to do this using other java-servers (JBoss comes to mind), please drop me a <a href="../../../contact.html" class="wikilink1" title="contact">note</a>.
+</p>
+
+<p>
+Funambol&#039;s running on a Java-based server (in my example Tomcat 5.0). Tomcat comes with his very own data source pool, that uses JNDI-names to identify data source names, when they&#039;re needed. We need one to contact SLOX&#039;s postgreSQL-database while syncing, so we need to add a JNDI-name.
+</p>
+
+<p>
+Go to &lt;funambol-home&gt;/tools/tomcat/conf/Catalina/localhost and open “funambol.txt” in your favourite text editor.
+</p>
+
+<p>
+Add these lines before the closing /Context-tag:
+</p>
+<pre class="code">
+    &lt;Resource name=&quot;&lt;jndi-name&gt;&quot; auth=&quot;Container&quot; type=&quot;javax.sql.DataSource&quot;/&gt;
+
+    &lt;ResourceParams name=&quot;&lt;jndi-name&gt;&quot;&gt;
+
+        &lt;parameter&gt;
+            &lt;name&gt;validationQuery&lt;/name&gt;
+            &lt;value&gt;select version();&lt;/value&gt;
+        &lt;/parameter&gt;
+        &lt;parameter&gt;
+            &lt;name&gt;url&lt;/name&gt;
+            &lt;value&gt;jdbc:postgresql://&lt;db-host&gt;:&lt;db-port&gt;/&lt;db-name&gt;&lt;/value&gt;
+        &lt;/parameter&gt;
+        &lt;parameter&gt;
+            &lt;name&gt;username&lt;/name&gt;
+            &lt;value&gt;&lt;db-username&gt;&lt;/value&gt;
+        &lt;/parameter&gt;
+        &lt;parameter&gt;
+            &lt;name&gt;password&lt;/name&gt;
+            &lt;value&gt;&lt;db-password&gt;&lt;/value&gt;
+        &lt;/parameter&gt;
+        &lt;parameter&gt;
+            &lt;name&gt;maxActive&lt;/name&gt;
+            &lt;value&gt;4&lt;/value&gt;
+        &lt;/parameter&gt;
+        &lt;parameter&gt;
+            &lt;name&gt;maxWait&lt;/name&gt;
+            &lt;value&gt;5000&lt;/value&gt;
+        &lt;/parameter&gt;
+        &lt;parameter&gt;
+            &lt;name&gt;driverClassName&lt;/name&gt;
+            &lt;value&gt;org.postgresql.Driver&lt;/value&gt;
+        &lt;/parameter&gt;
+        &lt;parameter&gt;
+            &lt;name&gt;maxIdle&lt;/name&gt;
+            &lt;value&gt;2&lt;/value&gt;
+        &lt;/parameter&gt;
+    &lt;/ResourceParams&gt;
+</pre>
+
+<p>
+Replace the following tags with real values:
+
+</p>
+<ul>
+<li class="level1"><div class="li"> &lt;jndi-name&gt;: The name of the new jndi-source (i.e.:jdbc/sloxmlds)</div>
+</li>
+<li class="level1"><div class="li"> &lt;db-host&gt;: The host-name or ip-address of the database server (that&#039;s mostly the same host, SLOX resides on)</div>
+</li>
+<li class="level1"><div class="li"> &lt;db-port&gt;: Enter the port of the database. (that&#039;s mostly 5432)</div>
+</li>
+<li class="level1"><div class="li"> &lt;db-name&gt;: Enter the name of the SLOX-database name. (that&#039;s mostly comfire)</div>
+</li>
+<li class="level1"><div class="li"> &lt;db-username&gt;: Enter the username to connect to the database. (mostly comfire, too)</div>
+</li>
+<li class="level1"><div class="li"> &lt;db-password&gt;: The password of the user. (mostly comfire again)</div>
+</li>
+</ul>
+
+<p>
+
+<em>Note:</em> If the funambol server is another server (a good idea would be one, that&#039;s residing in your dmz!), you&#039;ll probably have to open the postgresql-server to your net. I won&#039;t cover that in detail. You&#039;ll have to configure the listen addresses in the postgresql.conf and configure security-related options in the pg_hba.conf. Go to <a href="http://www.postgresql.org" class="urlextern" title="http://www.postgresql.org"  rel="nofollow">http://www.postgresql.org</a>. They have some very good documentation there.
+</p>
+
+<p>
+Save the file and restart Tomcat. (You can do this by restarting the funambol-server!)
+</p>
+
+</div>
+<!-- SECTION "Creating a JNDI name to connect to SLOX's database" [1913-4814] -->
+<h2><a name="installing_the_module" id="installing_the_module">Installing the module</a></h2>
+<div class="level2">
+
+<p>
+
+These steps are required for the module to work properly:
+
+</p>
+<ul>
+<li class="level1"><div class="li"> Copy the s4j-file to &lt;funambol-home&gt;/ds-server/modules.</div>
+</li>
+<li class="level1"><div class="li"> Go into &lt;funambol-home&gt;/ds-server</div>
+</li>
+<li class="level1"><div class="li"> Open “install.properties” in your favourite text editor.</div>
+</li>
+<li class="level1"><div class="li"> Search for the line starting with “install-modules” and add a comma and the name of the package-file (that is with the version-informations) without the suffix ”.s4j” to the list.</div>
+</li>
+<li class="level1"><div class="li"> Save the file</div>
+</li>
+<li class="level1"><div class="li"> Run bin/install-modules.sh tomcat50 (for Unix-type OSes) or bin/install-modules.cmd tomcat50 (for Windows)</div>
+</li>
+<li class="level1"><div class="li"> Answer “n” for every other module then the sloxml module when asked wether to initialise the database. (If not your database will be initialized for that module!)</div>
+</li>
+</ul>
+
+<p>
+
+That&#039;s all you need to know about installing SloxML. Go on reading <a href="../../../funambol/sloxml/docu/01_configuring.html" class="wikilink1" title="funambol:sloxml:docu:01_configuring">2. Configuring</a>.
+
+</p>
+
+</div>
+<!-- SECTION "Installing the module" [4815-] --><div class="footnotes">
+<div class="fn"><sup><a href="#fnt__1" id="fn__1" name="fn__1" class="fn_bot">1)</a></sup> 
+You need a Novell user-account to download the classes. But as the classes appear to be distributed under the OpenLDAP-License, I think it&#039;s not bad to offer a download of the package on my on site. Please <a href="../../../contact.html" class="wikilink1" title="contact">contact</a> me, if you&#039;re a copyright holder and think, that this is wrong. Download the package here: <a href="http://develop.dieploegers.de/files/sloxml/novell-jldap.zip" class="urlextern" title="http://develop.dieploegers.de/files/sloxml/novell-jldap.zip"  rel="nofollow">http://develop.dieploegers.de/files/sloxml/novell-jldap.zip</a></div>
+</div>
+</div><!-- closes <div class="dokuwiki export">-->

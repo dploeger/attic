@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<book>
+  <title>C!ETS - Cool! Edit This Site</title>
+
+  <subtitle>Manual</subtitle>
+
+  <bookinfo>
+    <date>2004-12-01</date>
+
+    <author>
+      <surname></surname>
+
+      <firstname>Dennis</firstname>
+
+      <surname>Ploeger</surname>
+
+      <email>develop@dieploegers.de</email>
+    </author>
+  </bookinfo>
+
+  <chapter>
+    <title>Introduction</title>
+
+    <section>
+      <para>You know, I was searching for a script. </para>
+
+      <para>Something like a <emphasis><firstterm>wiki</firstterm></emphasis>.
+      But only for some sites. With no login, nothing, just editing a site.
+      Finally I searched for a good WYSIWYG-Editor, found TinyMCE and utilized
+      it in a small script to edit any site I - as the PHP-developer of the
+      site - like. </para>
+
+      <para>And here it is: C!ETS. It's very simple actually. It does nothing
+      more than help you with displaying the content, editing the content and
+      storing the content. I use Pear_DB to have a better and global access to
+      databases.</para>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Using C!ETS</title>
+
+    <para>After you have included C!ETS using</para>
+
+    <para><command><command>require_once("cets.php");</command></command></para>
+
+    <para>you can initiate the C!ETS-class using </para>
+
+    <para><command>$cets=new cets("&lt;mydsn&gt;");</command></para>
+
+    <para>with the Pear_DB-DSN-information &lt;mydsn&gt;.</para>
+
+    <para>You should use a HTTP-Parameter to control your script. I mostly use
+    something like "action". So, when the user simply clicks on the link to
+    the site, the parameter "action" isn't set, so we should display our page.
+    Let's say it's the page "news".</para>
+
+    <para><command>if (!(is_set($HTTP_GET_VARS['action']))) {</command></para>
+
+    <para><command> print $cets-&gt;displayContent("news"); print '&lt;a
+    href="index.php?action=edit"&gt;Edit&lt;/a&gt;';</command></para>
+
+    <para><command>}</command></para>
+
+    <para>After displaying the content using print and the method
+    displayContent, I printed out a link to edit the content by simply setting
+    the parameter "action" to "edit". So, when the user clicks on this link,
+    the page is loaded again and we shall display the edit window:</para>
+
+    <para><command>if ($HTTP_GET_VARS['action'] == "edit") {</command></para>
+
+    <para><command> print
+    $cets-&gt;editContent("news","index.php",array("action"=&gt;"save"),"GET");</command></para>
+
+    <para><command>}</command></para>
+
+    <para>Now C!ETS displays the editor window within a form, that has the
+    parameters action="index.php" and method="GET" (I used the GET-method here
+    for example. You better use POST !). The array-parameter above tells C!ETS
+    to display a hidden form element named "action" and give it the value
+    "save". This again sets the action variable for our script. This time it's
+    save, so the edited contents should be saved back to the database:</para>
+
+    <para><command>if ($HTTP_GET_VARS['action'] == "save") {</command></para>
+
+    <para><command>
+    $cets-&gt;saveContent("news",$HTTP_GET_VARS['CETSTextarea']);</command></para>
+
+    <para><command>}</command></para>
+
+    <para>As you can see, C!ETS transfers the contents of the edit-window
+    using the "CETSTextarea". Actually this is a complete working site.
+    There's just one thing missing to get the editor started: tinymce needs
+    some lines in the &lt;head&gt;-area of the HTML site. You can generate
+    them using</para>
+
+    <para><command>print $cets-&gt;getHeaders();</command></para>
+
+    <para>I hope you got the picture of how C!ETS works and how easy you can
+    use it in your scripts. For more advanced usage and all the other methods,
+    please see the generated documentation in the docs/ - directory. </para>
+  </chapter>
+</book>

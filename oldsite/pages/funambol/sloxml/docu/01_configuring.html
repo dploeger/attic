@@ -1,0 +1,148 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+ lang="en" dir="ltr">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<!-- metadata -->
+<meta name="generator" content="Offline" />
+<meta name="version" content="Offline 0.1" />
+<!-- style sheet links -->
+<link rel="stylesheet" media="all" type="text/css" href="../../../../css/all.css" />
+<link rel="stylesheet" media="screen" type="text/css" href="../../../../css/screen.css" />
+<link rel="stylesheet" media="print" type="text/css" href="../../../../css/print.css" />
+
+</head>
+<body>
+<div class="dokuwiki export">
+
+
+
+
+<h1><a name="configuring" id="configuring">2. Configuring</a></h1>
+<div class="level1">
+
+</div>
+<!-- SECTION "2. Configuring" [1-30] -->
+<h2><a name="introduction" id="introduction">Introduction</a></h2>
+<div class="level2">
+
+<p>
+
+To configure the real synchronization data source with funambol, start the funambol administration tool and double click on “Funambol Administration tool” to connect to your funambol server. Accept the defaults (or enter the real username/password if you&#039;ve already configured your funambol-server) and login.
+</p>
+
+</div>
+<!-- SECTION "Introduction" [31-368] -->
+<h2><a name="creating_a_new_data_source" id="creating_a_new_data_source">Creating a new data source</a></h2>
+<div class="level2">
+
+<p>
+
+Complete these steps to create your sloxml data source:
+
+</p>
+<ul>
+<li class="level1"><div class="li"> Go to Modules/sloxml/FunambolSloxMLConnector/SloxML SyncSource</div>
+</li>
+<li class="level1"><div class="li"> Right click and select “Add SyncSource”</div>
+</li>
+<li class="level1"><div class="li"> In the right pane enter the following values:</div>
+<ul>
+<li class="level2"><div class="li"> SourceURI: That&#039;s the name of the data source, that you&#039;ll enter in your mobile device later on. (i.e: ./sloxmlc)</div>
+</li>
+<li class="level2"><div class="li"> Name: The real name of the data source. I haven&#039;t figured out yet, what it means. (i.e.: sloxmlc)</div>
+</li>
+<li class="level2"><div class="li"> Type: Enter “SIF-C” for contact synchronisation, “SIF-E” for calendar synchronisation. (i.e.: SIF-C)</div>
+</li>
+<li class="level2"><div class="li"> JNDI Name of SLOX-Database: Enter the JNDI-name for the slox-database, that you&#039;ve created using <a href="../../../funambol/sloxml/docu/00_install.html" class="wikilink1" title="funambol:sloxml:docu:00_install">installation</a>. (i.e.: jdbc/sloxmlds)</div>
+</li>
+<li class="level2"><div class="li"> Hostname/IP of the <acronym title="Lightweight Directory Access Protocol">LDAP</acronym> host: Enter the hostname (or IP) of the <acronym title="Lightweight Directory Access Protocol">LDAP</acronym> host of your SLOX-installation. This is mostly the server, the rest of SLOX runs on.</div>
+</li>
+<li class="level2"><div class="li"> Port of the <acronym title="Lightweight Directory Access Protocol">LDAP</acronym> Database: The port of your <acronym title="Lightweight Directory Access Protocol">LDAP</acronym>-Server (normally 389)</div>
+</li>
+<li class="level2"><div class="li"> BaseDN of the <acronym title="Lightweight Directory Access Protocol">LDAP</acronym> Database: The base-DN of your <acronym title="Lightweight Directory Access Protocol">LDAP</acronym>-database. (That&#039;s per SLOX-default your domain in the form: dc=company,dc=com)</div>
+</li>
+<li class="level2"><div class="li"> DN of the user to bind with: Specify a user, that can read your <acronym title="Lightweight Directory Access Protocol">LDAP</acronym>-Database <sup><a href="#fn__1" name="fnt__1" id="fnt__1" class="fn_top">1)</a></sup></div>
+</li>
+<li class="level2"><div class="li"> Password of the user to bind with: Specify the password of the user given above.</div>
+</li>
+</ul>
+</li>
+<li class="level1"><div class="li"> Click “Add”</div>
+</li>
+</ul>
+
+<p>
+
+Using the examples provided here, you&#039;ve created a sloxml sync source for synchronising your contacts. You can now create another sync source (i.e. ./sloxmle) for calendar synchronisation using the type SIF-E.
+</p>
+
+</div>
+<!-- SECTION "Creating a new data source" [369-2037] -->
+<h2><a name="configuring_text_encoding" id="configuring_text_encoding">Configuring text encoding</a></h2>
+<div class="level2">
+
+<p>
+
+For good transportation over the <acronym title="Hyper Text Transfer Protocol">HTTP</acronym>-layer, which funambol uses as the main transport-layer for the synchronisation, you&#039;ll have to base64-encode all your data, that is transported.
+
+</p>
+<ul>
+<li class="level1"><div class="li"> Doubleclick on “Server settings” and then click on “Configure” beside the value for “Data transformer manager”.</div>
+</li>
+<li class="level1"><div class="li"> In the frame “Data transformation”, click on the ”+”-button</div>
+</li>
+<li class="level1"><div class="li"> In the left column of the new row enter your sloxml-<acronym title="Uniform Resource Identifier">URI</acronym> (i.e.: ./sloxmlc). In the right column enter “b64”. (You have to doubleclick into the cell to activate editing)</div>
+</li>
+<li class="level1"><div class="li"> Click “Save”</div>
+</li>
+</ul>
+
+<p>
+
+<em>Note</em>: You&#039;ll have to replay these steps for each SloxML-based sync source you create!
+</p>
+
+</div>
+<!-- SECTION "Configuring text encoding" [2038-2722] -->
+<h2><a name="configuring_synchronisation_strategy" id="configuring_synchronisation_strategy">Configuring synchronisation strategy</a></h2>
+<div class="level2">
+
+<p>
+
+Currently sloxML only supports a one-way sync from the server to the client, meaning you cannot add new items on your mobile device and sync them back to the server. Perhaps someone embeds this in the source and sends it back to me, so I can embed it here.
+</p>
+
+<p>
+To set the right strategy for this restriction complete these steps:
+
+</p>
+<ul>
+<li class="level1"><div class="li"> Doubleclick on “Server settings” and then click on “Configure” beside the value for “Strategy”.</div>
+</li>
+<li class="level1"><div class="li"> Select “Server wins” in the row described as “sloxml (./sloxml)”</div>
+</li>
+<li class="level1"><div class="li"> Click “Save”</div>
+</li>
+</ul>
+
+<p>
+
+<em>Note</em>: You&#039;ll have to replay these steps for each SloxML-based sync source you create!
+</p>
+
+<p>
+That&#039;s all for the configuration. Now we set up an example mobile device: Read <a href="../../../funambol/sloxml/docu/03_installing_mobile.html" class="wikilink1" title="funambol:sloxml:docu:03_installing_mobile">3. Installation on a mobile device</a>
+
+</p>
+
+</div>
+<!-- SECTION "Configuring synchronisation strategy" [2723-] --><div class="footnotes">
+<div class="fn"><sup><a href="#fnt__1" id="fn__1" name="fn__1" class="fn_bot">1)</a></sup> 
+You can specify the cyrus-user here, though it would better to create a single user, that can only read in the database and can&#039;t do anything else</div>
+</div>
+</div><!-- closes <div class="dokuwiki export">-->

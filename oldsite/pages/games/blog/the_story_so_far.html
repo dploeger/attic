@@ -1,0 +1,124 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+ lang="en" dir="ltr">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<!-- metadata -->
+<meta name="generator" content="Offline" />
+<meta name="version" content="Offline 0.1" />
+<!-- style sheet links -->
+<link rel="stylesheet" media="all" type="text/css" href="../../../css/all.css" />
+<link rel="stylesheet" media="screen" type="text/css" href="../../../css/screen.css" />
+<link rel="stylesheet" media="print" type="text/css" href="../../../css/print.css" />
+
+</head>
+<body>
+<div class="dokuwiki export">
+
+
+
+
+<h1><a name="the_story_so_far" id="the_story_so_far">The story so far</a></h1>
+<div class="level1">
+
+<p>
+
+Adventure gaming is the ultimate creative experience there is.
+</p>
+
+<p>
+That said, some people have problems creating adventure games. Like me. Though there is enough material cramping up my drawers, enough ideas filling up my mind, I simply cannot go through the whole process to be able to finally put the pen, the mouse, the keyboard and everything down and say: “Eureka”.
+</p>
+
+<p>
+A few weeks ago I had a simple, yet innovative idea. I&#039;m going to free exactly one hour a week of my time to do something for my game. I don&#039;t know, if that&#039;s the final answer to my creative problem, but it&#039;s a good start after all.
+</p>
+
+<p>
+So this blog I&#039;m using to document my progress every week. Perhaps it&#039;s something, other developers can use to point them in their own direction while drawing, developing, writing, composing, whatever.
+</p>
+
+<p>
+Okay. Ready? Go.
+</p>
+
+<p>
+As said, a few weeks ago I started to develop my game every once in a week, exactly one hour long. I light up a candle, tune in into my favourite type of music, relax and put my fingers on the keys. I even turn out phones and other stuff, that could hinder my work.
+</p>
+
+<p>
+The first thing, I looked into was creating the main character. Although I should add, that I had my little design document already nearly done. (You can have a little look at it <a href="http://dieploegers.de/storyboard/doku.php?id=gamedevelopment:redemption:start" class="urlextern" title="http://dieploegers.de/storyboard/doku.php?id=gamedevelopment:redemption:start"  rel="nofollow">here</a>)
+</p>
+
+<p>
+So, back to the main character. I had an idea about the overall graphic design, about a serious game with cartoon characters. I always liked cartoons, that have a mean and serious background and a dense atmosphere, but were drawn in a overall cartoonic style. So I drew my main character that way. Let&#039;s meet “Charlie”:
+</p>
+
+<p>
+<a href="/lib/exe/detail.php/games:blog:char_charlie_redesign.png?id=games%3Ablog%3Athe_story_so_far" class="media" title="games:blog:char_charlie_redesign.png"><img src="../../../media/games/blog/char_charlie_redesign.png" class="media" title="char_charlie_redesign.png" alt="char_charlie_redesign.png" /></a>
+</p>
+
+<p>
+After I had the first sketch done, I used a technique, I&#039;ve saw somewhere on the net, namely drawing him from the front and the side. Here are the scans:
+</p>
+
+<p>
+<a href="/lib/exe/detail.php/games:blog:charlie_front.png?id=games%3Ablog%3Athe_story_so_far" class="media" title="games:blog:charlie_front.png"><img src="../../../media/games/blog/charlie_front.png" class="media" title="Front scan" alt="Front scan" /></a>
+</p>
+
+<p>
+<a href="/lib/exe/detail.php/games:blog:charlie_side.png?id=games%3Ablog%3Athe_story_so_far" class="media" title="games:blog:charlie_side.png"><img src="../../../media/games/blog/charlie_side.png" class="media" title="Side scan" alt="Side scan" /></a>
+</p>
+
+<p>
+Now the ugly part: Animating. I <strong>hate</strong> animating, especially when it&#039;s about walkcycles. So I needed help with that. I first tried a neat little program, an AGS community member developed. It&#039;s ssh&#039;s <a href="http://new.bigbluecup.com/yabb/index.php?topic=26501.0" class="urlextern" title="http://new.bigbluecup.com/yabb/index.php?topic=26501.0"  rel="nofollow">Walkcycle generator</a>.
+</p>
+
+<p>
+Sadly, ssh only made it to animate low-res graphics and I wanted Charlie to walk in hi-res. (Well, hi-res… I thought about a 640&times;480-resolution)
+</p>
+
+<p>
+So. What to do? After that I tried my thing in 3d. I&#039;ve seen a web tutorial on how to model characters in a 3d render environment and used this skills (sorry, I cannot describe them here in detail) to build up Charlie as a 3d model. From there it would have been easy to animate him using Inverse Kinematics. I used <a href="http://www.blender3d.org" class="urlextern" title="http://www.blender3d.org"  rel="nofollow">Blender</a> for that.
+</p>
+
+<p>
+But after building the raw model, I lost the will to carry on in 3d. I realized, that I couldn&#039;t render Charlie so that he would look like a 2d cartoon character and not like a badly rendered 3d-to-cartoon-style graphic. So I quit blender.
+</p>
+
+<p>
+After that I thought: Hey, can&#039;t I use a 2D program, that knows bones and can rotate and scale images in a way the walkcycle generator did?
+</p>
+
+<p>
+I nearly wasted Google for that. After a loooong search I finally found, that <a href="http://www.creatoon.com/" class="urlextern" title="http://www.creatoon.com/"  rel="nofollow">CreaToon</a> was released as freeware, because the developer discontinued development.
+</p>
+
+<p>
+After some experiments with CreaToon I finally got my first walkcycle for Charlie… whiiiich needs a lot of improvement and arms and hands, I know.
+</p>
+
+<p>
+<a href="/lib/exe/detail.php/games:blog:charlie_left.gif?id=games%3Ablog%3Athe_story_so_far" class="media" title="games:blog:charlie_left.gif"><img src="../../../media/games/blog/charlie_left.gif" class="media" title="charlie_left.gif" alt="charlie_left.gif" /></a>
+</p>
+
+<p>
+That&#039;s where I am at this point. Where this goes? Well, I hope to a game in the end. We&#039;ll see…
+
+</p>
+<hr />
+
+<p>
+<strong>Tags:</strong>
+</p>
+<div class="tags"><span>
+	<a href="/doku.php/games:tags:general" class="wikilink1" title="games:tags:general" rel="tag">General entries</a>,
+	<a href="/doku.php/games:tags:characters" class="wikilink1" title="games:tags:characters" rel="tag">Character design</a>
+</span></div>
+
+</div>
+</div><!-- closes <div class="dokuwiki export">-->
