@@ -9,6 +9,8 @@
 # Needs a repository configuration file in the format
 # URL,local directory,argument for wget "--cut-dirs"-option (see below)
 #
+# THE LOCAL DIRECTORY HAS TO EXIST PRIOR RUNNING UPDATEMIRROR!
+#
 # cut-dirs-option:
 # The cut-dirs-option tells wget to remove directories from the local structure.
 # If you have a URL http://mirror.com/pub/site/interesting, you would specify the option 3, so that only files and directories BELOW "interesting"
