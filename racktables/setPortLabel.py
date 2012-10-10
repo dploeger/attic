@@ -61,11 +61,10 @@ def findHostforPatchpanelPort(linkId):
         )
 
     else:
-        # Can't find a "Port"-Tag. Quit
+        # Can't find a "Port"-Tag. Probably only an access patchpanel.
+        # Set the name of the patchpanel
 
-        raise WrongName(
-            "Cannot interpret port name %s" % (linkInfo["PortName"])
-        )
+        return linkInfo
 
     # Find backbone port
 
