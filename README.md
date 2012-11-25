@@ -19,6 +19,7 @@ What's in here?
   * updatemirror - A very small script to mirror websites using wget more
     easily
   * racktables - Various scripts for [racktables](http://racktables.org/)
+  * zimbragitmirror - Zimbra Perforce <> Github-Mirrorscript 
 
 Support
 -------
